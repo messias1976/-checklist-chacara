@@ -22,18 +22,30 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Set up Node
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
+      - name: Check JavaScript syntax
+        run: node --check www/app.js
+      - name: Verify required web assets
+        run: |
+          test -s www/index.html
+          test -s www/app.js
+          test -s www/manifest.json
+          node -e "JSON.parse(require('fs').readFileSync('www/manifest.json','utf8'))"
+      - name: Validate Capacitor configuration
+        run: npx cap doctor
       - name: Create Android project
         run: npx cap add android
       - name: Sync web app
         run: npx cap sync android
-      - name: Build APK
-        run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+      - name: Build debug APK
+        run: cd android && chmod +x gradlew && ./gradlew --no-daemon assembleDebug
+      - name: Verify APK exists and is not empty
+        run: test -s android/app/build/outputs/apk/debug/app-debug.apk
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
