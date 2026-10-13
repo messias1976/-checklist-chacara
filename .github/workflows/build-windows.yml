@@ -1,0 +1,45 @@
+name: Build Windows Installer
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'www/**'
+      - 'desktop.cjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/build-windows.yml'
+permissions:
+  contents: read
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Check app JavaScript syntax
+        run: node --check www/app.js
+      - name: Check desktop entry point
+        run: node --check desktop.cjs
+      - name: Verify app files
+        shell: pwsh
+        run: |
+          if (!(Test-Path "www/index.html")) { throw "www/index.html não encontrado" }
+          if (!(Test-Path "www/app.js")) { throw "www/app.js não encontrado" }
+      - name: Build Windows installer and portable app
+        run: npm run dist:win
+      - name: Upload Windows files
+        uses: actions/upload-artifact@v4
+        with:
+          name: checklist-chacara-windows
+          path: |
+            dist/*.exe
+            dist/*.blockmap
+            dist/latest.yml
+          if-no-files-found: error
