@@ -38,6 +38,8 @@ jobs:
           node -e "JSON.parse(require('fs').readFileSync('www/manifest.json','utf8'))"
       - name: Validate Capacitor configuration
         run: npx cap doctor
+      - name: Confirm Android package identifier
+        run: node -e "const c=JSON.parse(require('fs').readFileSync('capacitor.config.json','utf8')); if(c.appId!=='br.com.m2co.checklistchacara') process.exit(1); console.log('Android package:',c.appId)"
       - name: Create Android project
         run: npx cap add android
       - name: Sync web app
