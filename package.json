@@ -1,16 +1,46 @@
 {
   "name": "checklist-chacara",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Checklist offline da Chácara",
+  "author": "M² & Co. Digital",
+  "main": "desktop.cjs",
   "scripts": {
-    "build": "node -e \"console.log('Static app ready in www/')\""
+    "build": "node -e \"console.log('Static app ready in www/')\"",
+    "start:desktop": "electron .",
+    "dist:win": "electron-builder --win nsis portable"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
     "@capacitor/core": "^7.4.3"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.4.3"
+    "@capacitor/cli": "^7.4.3",
+    "electron": "^35.7.5",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "br.com.m2co.checklistchacara.desktop",
+    "productName": "Checklist da Chácara",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "desktop.cjs",
+      "www/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
 }
