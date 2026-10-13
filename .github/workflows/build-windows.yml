@@ -6,6 +6,7 @@ on:
     paths:
       - 'www/**'
       - 'desktop.cjs'
+      - 'generate-icon.cjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/build-windows.yml'
