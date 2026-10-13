@@ -33,7 +33,7 @@ jobs:
           if (!(Test-Path "www/index.html")) { throw "www/index.html não encontrado" }
           if (!(Test-Path "www/app.js")) { throw "www/app.js não encontrado" }
       - name: Build Windows installer and portable app
-        run: npm run dist:win
+        run: npm run dist:win -- --publish never
       - name: Upload Windows files
         uses: actions/upload-artifact@v4
         with:
